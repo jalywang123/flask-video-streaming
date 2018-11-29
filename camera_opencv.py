@@ -1,6 +1,7 @@
 import cv2
 from base_camera import BaseCamera
-
+import cube_finder
+import time
 
 class Camera(BaseCamera):
     video_source = 0
@@ -17,7 +18,12 @@ class Camera(BaseCamera):
 
         while True:
             # read current frame
-            _, img = camera.read()
+            #time.sleep(0.05)
+ 
+            _, raw_cap = camera.read()
 
+            returned = cube_finder.process_image(raw_cap)
+            img = getattr(returned,'frame')
+	    #img = raw_cap
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()
